@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Apology Letter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffb3d9, #ff80cc, #ff4db3, #fd79a8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+        }
+        
+        .envelope-container {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .envelope-container:hover {
+            transform: scale(1.05);
+        }
+        
+        .envelope {
+            width: 500px;
+            height: 320px;
+            position: relative;
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 10px 25px rgba(253, 121, 168, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 49%, rgba(253, 121, 168, 0.1) 50%, transparent 51%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(145deg, #e17055, #d63031, #b71c1c);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.3);
+        }
+        
+        .envelope-flap::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%);
+            border-radius: 50%;
+            z-index: 1; 
+        }
+        
+        .envelope-flap::after {
+            content: '💌';
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            z-index: 2;
+        }
+        
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+        
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(145deg, #ffffff, #f1f2f6);
+            border: 3px solid #e17055;
+            border-bottom: none;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .envelope-body::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fd79a8, transparent);
+            opacity: 0.3;
+        }
+        
+        .envelope-body::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #fd79a8, transparent);
+            opacity: 0.2;
+        }
+        
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 70px;
+            height: 60px;
+            background: linear-gradient(45deg, #fd79a8, #fdcb6e);
+            border: 3px solid #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            z-index: 4;
+            transition: opacity 0.5s ease;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);
+            transform: rotate(-2deg);
+        }
+        
+        .stamp::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px dashed rgba(255,255,255,0.6);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+        
+        .stamp-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+        
+        .envelope.open .stamp {
+            opacity: 0;
+        }
+        
+        .address {
+            position: absolute;
+            top: 220px; 
+            left: 50%;
+            transform: translateX(-50%); 
+            font-family: 'Dancing Script', cursive;
+            font-size: 20px;
+            color: #2d3436;
+            z-index: 4;
+            transition: opacity 0.5s ease;
+            text-align: center;
+        }
+        
+        .envelope.open .address {
+            opacity: 0;
+        }
+        
+        .letter {
+            position: absolute;
+            top: 50px;
+            left: 25px;
+            width: 450px;
+            max-height: 400px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.8s ease 0.3s;
+            z-index: 2;
+            overflow-y: auto;
+        }
+        
+        .envelope.open .letter {
+            transform: translateY(-50px);
+            opacity: 1;
+        }
+        
+        .letter-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fd79a8;
+            padding-bottom: 15px;
+        }
+        
+        .letter-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            color: #d63031;
+            font-weight: 700;
+        }
+        
+        .letter-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2d3436;
+            text-align: justify;
+        }
+        
+        .letter-content p {
+            margin-bottom: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 20px;
+            color: #d63031;
+        }
+        
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(253, 121, 168, 0.7);
+            animation: float 6s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .click-hint {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Dancing Script', cursive;
+            font-size: 18px;
+            color: #2d3436;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        .envelope.open .click-hint {
+            display: none;
+        }
+        
+        .flower-decoration {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.3;
+            animation: sway 4s infinite ease-in-out;
+        }
+        
+        .flower1 {
+            top: 10px;
+            left: 10px;
+            animation-delay: 0s;
+        }
+        
+        .flower2 {
+            bottom: 10px;
+            right: 10px;
+            animation-delay: 2s;
+        }
+        
+        @keyframes sway {
+            0%, 100% {
+                transform: rotate(-5deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+        }
+
+        /* --- NEW POPUP STYLES --- */
+        .popup-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000; /* High z-index to be on top of everything */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Semi-transparent black background */
+            backdrop-filter: blur(3px); /* Optional: modern effect */
+            transition: opacity 0.3s;
+        }
+
+        .popup-content {
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            margin: 10% auto; /* 10% from the top and centered horizontally */
+            padding: 30px;
+            border: 5px solid #fd79a8; /* Changed from #d63031 (red) to #fd79a8 (pink) */
+            border-radius: 12px;
+            width: 80%; /* Width of the popup */
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(253, 121, 168, 0.4); /* Changed shadow to match pink theme */
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: bounceIn 0.5s forwards;
+        }
+
+        @keyframes bounceIn {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            color: #d63031;
+            float: right;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #b71c1c;
+            text-decoration: none;
+        }
+
+        .popup-header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fd79a8;
+            padding-bottom: 10px;
+        }
+
+        .popup-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #d63031;
+            font-weight: 700;
+        }
+
+        .popup-body {
+            text-align: center;
+        }
+
+        .popup-body p {
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .popup-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        /* --- END NEW POPUP STYLES --- */
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="envelope-container" onclick="openEnvelope()">
+        <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            
+            <div class="stamp">
+                <img src="both.jpg" alt="Sweet gift heart stamp" class="stamp-image">
+            </div>
+            <div class="address">
+                To: Yara Cole Hambre<br>
+                From: Francisco Lim
+            </div>
+            
+            <div class="letter" id="letter">
+                <div class="letter-header">
+                    <div class="letter-title">A Heartfelt Apology</div>
+                </div>
+                
+                <div class="letter-content">
+                    <p>My Dearest,</p>
+                    
+                    <p>I find myself reaching for words that seem too small to carry the weight of what I need to say. I'm truly, deeply sorry for my actions and the hurt they may have caused you.</p>
+                    
+                    <p>Like flowers that need both sunshine and rain to grow, relationships need understanding through both joy and difficult moments. I realize now that I failed to provide the care and consideration you deserved.</p>
+                    
+                    <p>You mean the world to me, and knowing that I've caused you pain fills my heart with genuine remorse. I want you to know that I've reflected deeply on my behavior, and I'm committed to being better - not just for you, but because you inspire me to be the best version of myself.</p>
+                    
+                    <p>Please know that this apology comes from the deepest part of my heart. I hope you can find it in yours to forgive me, and perhaps give us another chance to create something even more beautiful together.</p>
+                    
+
+                    <p>Your patience and kindness are the greatest gifts in my life. Every moment spent with you, even the difficult ones, is a valuable lesson that I hold dear. I promise to cherish and protect the beautiful bond we share. I am ready to listen and learn.</p>
+                    <p>I look forward to the moment we can talk face-to-face and move past this. Until then, please accept this digital hug and know that I miss you terribly. I love you more than words can say.</p>
+
+                    <p>With all my love and sincerest apologies,</p>
+                </div>
+                
+                <div class="signature">
+                    Forever yours ❤️
+                </div>
+
+                </div>
+            
+            <div class="flower-decoration flower1">🌸</div>
+            <div class="flower-decoration flower2">🌺</div>
+        </div>
+        
+        <div class="click-hint">Click to open ✨</div>
+    </div>
+    
+    <div id="imagePopup" class="popup-container">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <div class="popup-header">
+                <div class="popup-title">A Little Extra Love for You!</div>
+            </div>
+            <div class="popup-body">
+                <p>I hope this makes you smile. mwa mwa mwa</p>
+                <img src="flower.png" alt="Sweet Flower Image" class="popup-image">
+            </div>
+        </div>
+    </div>
+    <script>
+        // Flag to ensure we only attach the listener once
+        let scrollListenerAttached = false; 
+
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            // Toggle the 'open' class
+            envelope.classList.toggle('open');
+            
+            const letter = document.getElementById('letter');
+
+            // Only attach scroll listener if the envelope is open and the listener hasn't been attached yet
+            if (envelope.classList.contains('open') && !scrollListenerAttached) {
+                // Check position immediately after opening
+                checkScrollPosition(); 
+                letter.addEventListener('scroll', checkScrollPosition);
+                scrollListenerAttached = true;
+            } else if (!envelope.classList.contains('open') && scrollListenerAttached) {
+                // Remove the listener if the letter is closed again
+                letter.removeEventListener('scroll', checkScrollPosition);
+                scrollListenerAttached = false;
+                closePopup(); // Close the popup if the envelope is closed
+            }
+        }
+        
+        function checkScrollPosition() {
+            const letter = document.getElementById('letter');
+            
+            // Check if the scroll position is at the very bottom, allowing for a small 5-pixel tolerance.
+            const isScrolledToBottom = (letter.scrollTop + letter.clientHeight) >= (letter.scrollHeight - 5); 
+            
+            if (isScrolledToBottom) {
+                showPopup(); // Show the popup instead of revealing the in-letter image
+                
+                // Remove the listener after the popup is triggered so it doesn't run unnecessarily
+                letter.removeEventListener('scroll', checkScrollPosition);
+                scrollListenerAttached = false;
+            }
+        }
+        
+        // --- NEW POPUP FUNCTIONS ---
+        function showPopup() {
+            document.getElementById('imagePopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('imagePopup').style.display = 'none';
+        }
+        // --- END NEW POPUP FUNCTIONS ---
+        
+        // Heart animation logic remains the same
+        function createHeart() {
+            const hearts = document.getElementById('hearts');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+            hearts.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+        
+        setInterval(createHeart, 2000);
+        
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createHeart, i * 400);
+        }
+    </script>
+</body>
+</html>
