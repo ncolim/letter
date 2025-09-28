@@ -21,12 +21,15 @@
             align-items: center;
             font-family: 'Crimson Text', serif;
             overflow-x: hidden;
+            padding: 20px; /* Add some padding for small screens */
         }
         
         .envelope-container {
             position: relative;
             cursor: pointer;
             transition: transform 0.3s ease;
+            width: 100%; /* Important for centering on mobile */
+            max-width: 500px; /* Keep a maximum width */
         }
         
         .envelope-container:hover {
@@ -34,7 +37,8 @@
         }
         
         .envelope {
-            width: 500px;
+            width: 100%; /* Will take up full width of container */
+            max-width: 500px; /* Original max width */
             height: 320px;
             position: relative;
             background: linear-gradient(145deg, #fff, #f8f9fa);
@@ -42,6 +46,7 @@
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid rgba(255,255,255,0.8);
+            margin: 0 auto; /* Center it */
         }
         
         .envelope::before {
@@ -185,6 +190,7 @@
             z-index: 4;
             transition: opacity 0.5s ease;
             text-align: center;
+            line-height: 1.2;
         }
         
         .envelope.open .address {
@@ -194,14 +200,15 @@
         .letter {
             position: absolute;
             top: 50px;
-            left: 25px;
-            width: 450px;
+            left: 50%; /* Center the letter horizontally */
+            transform: translateX(-50%) translateY(100px); /* Center and initial offset */
+            width: 90%; /* Use percentage for responsiveness */
+            max-width: 450px; /* Keep a max width */
             max-height: 400px;
             background: linear-gradient(145deg, #ffffff, #f8f9fa);
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 30px;
-            transform: translateY(100px);
             opacity: 0;
             transition: all 0.8s ease 0.3s;
             z-index: 2;
@@ -209,7 +216,7 @@
         }
         
         .envelope.open .letter {
-            transform: translateY(-50px);
+            transform: translateX(-50%) translateY(-50px); /* Move up when open */
             opacity: 1;
         }
         
@@ -331,18 +338,18 @@
             }
         }
 
-        /* --- NEW POPUP STYLES --- */
+        /* --- POPUP STYLES --- */
         .popup-container {
-            display: none; /* Hidden by default */
+            display: none; 
             position: fixed;
-            z-index: 1000; /* High z-index to be on top of everything */
+            z-index: 1000; 
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6); /* Semi-transparent black background */
-            backdrop-filter: blur(3px); /* Optional: modern effect */
+            background-color: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(3px); 
             transition: opacity 0.3s;
         }
 
@@ -350,11 +357,11 @@
             background: linear-gradient(145deg, #fff, #f8f9fa);
             margin: 10% auto; /* 10% from the top and centered horizontally */
             padding: 30px;
-            border: 5px solid #fd79a8; /* Changed from #d63031 (red) to #fd79a8 (pink) */
+            border: 5px solid #fd79a8; 
             border-radius: 12px;
-            width: 80%; /* Width of the popup */
+            width: 90%; /* Changed to a smaller percentage for mobile */
             max-width: 450px;
-            box-shadow: 0 10px 40px rgba(253, 121, 168, 0.4); /* Changed shadow to match pink theme */
+            box-shadow: 0 10px 40px rgba(253, 121, 168, 0.4); 
             position: relative;
             transform: scale(0.9);
             opacity: 0;
@@ -414,7 +421,51 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        /* --- END NEW POPUP STYLES --- */
+        
+        /* --- MOBILE OPTIMIZATION MEDIA QUERY --- */
+        @media (max-width: 600px) {
+            .envelope {
+                height: 280px; /* Slightly smaller height on smaller screens */
+            }
+
+            .envelope-flap {
+                height: 140px;
+            }
+
+            .envelope-body {
+                height: 140px;
+            }
+
+            .letter {
+                max-height: 300px; /* Shorter letter on mobile */
+                padding: 20px;
+                top: 30px;
+                transform: translateX(-50%) translateY(100px);
+            }
+            
+            .envelope.open .letter {
+                transform: translateX(-50%) translateY(-30px);
+            }
+
+            .address {
+                top: 200px;
+                font-size: 18px;
+            }
+            
+            .stamp {
+                width: 60px;
+                height: 50px;
+                right: 20px;
+            }
+
+            .letter-title {
+                font-size: 24px;
+            }
+
+            .popup-content {
+                margin: 20% auto; /* Adjust vertical centering for mobile */
+            }
+        }
     </style>
 </head>
 <body>
@@ -449,7 +500,6 @@
                     
                     <p>Please know that this apology comes from the deepest part of my heart. I hope you can find it in yours to forgive me, and perhaps give us another chance to create something even more beautiful together.</p>
                     
-
                     <p>Your patience and kindness are the greatest gifts in my life. Every moment spent with you, even the difficult ones, is a valuable lesson that I hold dear. I promise to cherish and protect the beautiful bond we share. I am ready to listen and learn.</p>
                     <p>I look forward to the moment we can talk face-to-face and move past this. Until then, please accept this digital hug and know that I miss you terribly. I love you more than words can say.</p>
 
@@ -495,7 +545,11 @@
             // Only attach scroll listener if the envelope is open and the listener hasn't been attached yet
             if (envelope.classList.contains('open') && !scrollListenerAttached) {
                 // Check position immediately after opening
-                checkScrollPosition(); 
+                // We add a short delay to allow for the CSS transition to complete on some browsers
+                setTimeout(() => {
+                    checkScrollPosition();
+                }, 900); 
+                
                 letter.addEventListener('scroll', checkScrollPosition);
                 scrollListenerAttached = true;
             } else if (!envelope.classList.contains('open') && scrollListenerAttached) {
@@ -521,7 +575,7 @@
             }
         }
         
-        // --- NEW POPUP FUNCTIONS ---
+        // --- POPUP FUNCTIONS ---
         function showPopup() {
             document.getElementById('imagePopup').style.display = 'block';
         }
@@ -529,7 +583,7 @@
         function closePopup() {
             document.getElementById('imagePopup').style.display = 'none';
         }
-        // --- END NEW POPUP FUNCTIONS ---
+        // --- END POPUP FUNCTIONS ---
         
         // Heart animation logic remains the same
         function createHeart() {
