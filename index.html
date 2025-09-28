@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sweet Apology Letter</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap');
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -21,24 +22,28 @@
             align-items: center;
             font-family: 'Crimson Text', serif;
             overflow-x: hidden;
-            padding: 20px; /* Add some padding for small screens */
+            padding: 10px;
+            touch-action: manipulation;
         }
         
         .envelope-container {
             position: relative;
             cursor: pointer;
             transition: transform 0.3s ease;
-            width: 100%; /* Important for centering on mobile */
-            max-width: 500px; /* Keep a maximum width */
+            width: 90vw;
+            max-width: 500px;
         }
         
         .envelope-container:hover {
             transform: scale(1.05);
         }
         
+        .envelope-container:active {
+            transform: scale(0.98);
+        }
+        
         .envelope {
-            width: 100%; /* Will take up full width of container */
-            max-width: 500px; /* Original max width */
+            width: 100%;
             height: 320px;
             position: relative;
             background: linear-gradient(145deg, #fff, #f8f9fa);
@@ -46,7 +51,7 @@
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid rgba(255,255,255,0.8);
-            margin: 0 auto; /* Center it */
+            margin: 0 auto;
         }
         
         .envelope::before {
@@ -85,7 +90,7 @@
             height: 60px;
             background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%);
             border-radius: 50%;
-            z-index: 1; 
+            z-index: 1;
         }
         
         .envelope-flap::after {
@@ -145,17 +150,16 @@
             background: linear-gradient(45deg, #fd79a8, #fdcb6e);
             border: 3px solid #fff;
             border-radius: 4px;
+            z-index: 4;
+            transition: opacity 0.5s ease;
+            transform: rotate(-2deg);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            z-index: 4;
-            transition: opacity 0.5s ease;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);
-            transform: rotate(-2deg);
         }
-        
+
         .stamp::before {
             content: '';
             position: absolute;
@@ -175,22 +179,29 @@
             border-radius: 2px;
         }
         
+        .stamp-fallback {
+            font-size: 10px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
         .envelope.open .stamp {
             opacity: 0;
         }
         
         .address {
             position: absolute;
-            top: 220px; 
+            top: 220px;
             left: 50%;
-            transform: translateX(-50%); 
+            transform: translateX(-50%);
             font-family: 'Dancing Script', cursive;
             font-size: 20px;
             color: #2d3436;
             z-index: 4;
             transition: opacity 0.5s ease;
             text-align: center;
-            line-height: 1.2;
         }
         
         .envelope.open .address {
@@ -198,25 +209,28 @@
         }
         
         .letter {
-            position: absolute;
-            top: 50px;
-            left: 50%; /* Center the letter horizontally */
-            transform: translateX(-50%) translateY(100px); /* Center and initial offset */
-            width: 90%; /* Use percentage for responsiveness */
-            max-width: 450px; /* Keep a max width */
-            max-height: 400px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 90%;
+            max-width: 450px;
+            height: 70vh;
+            max-height: 500px;
             background: linear-gradient(145deg, #ffffff, #f8f9fa);
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 30px;
+            transform: translate(-50%, -50%) translateY(200px);
             opacity: 0;
             transition: all 0.8s ease 0.3s;
-            z-index: 2;
+            z-index: 200;
             overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
         
         .envelope.open .letter {
-            transform: translateX(-50%) translateY(-50px); /* Move up when open */
+            transform: translate(-50%, -50%) translateY(0px);
             opacity: 1;
         }
         
@@ -225,6 +239,16 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #fd79a8;
             padding-bottom: 15px;
+            position: sticky;
+            top: -30px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            z-index: 10;
+            margin-left: -30px;
+            margin-right: -30px;
+            margin-top: -30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 30px;
         }
         
         .letter-title {
@@ -251,14 +275,24 @@
             font-family: 'Dancing Script', cursive;
             font-size: 20px;
             color: #d63031;
+            position: sticky;
+            bottom: -30px;
+            background: linear-gradient(to top, #ffffff, rgba(248, 249, 250, 0.95));
+            z-index: 10;
+            margin-left: -30px;
+            margin-right: -30px;
+            margin-bottom: -30px;
+            padding: 15px 30px 30px 30px;
         }
         
         .hearts {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
             pointer-events: none;
             overflow: hidden;
+            top: 0;
+            left: 0;
         }
         
         .heart {
@@ -338,36 +372,33 @@
             }
         }
 
-        /* --- POPUP STYLES --- */
         .popup-container {
-            display: none; 
+            display: none;
             position: fixed;
-            z-index: 1000; 
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6); 
-            backdrop-filter: blur(3px); 
-            transition: opacity 0.3s;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
         }
 
         .popup-content {
             background: linear-gradient(145deg, #fff, #f8f9fa);
-            margin: 10% auto; /* 10% from the top and centered horizontally */
+            margin: 10% auto;
             padding: 30px;
-            border: 5px solid #fd79a8; 
+            border: 5px solid #fd79a8;
             border-radius: 12px;
-            width: 90%; /* Changed to a smaller percentage for mobile */
+            width: 90%;
             max-width: 450px;
-            box-shadow: 0 10px 40px rgba(253, 121, 168, 0.4); 
+            box-shadow: 0 10px 40px rgba(253, 121, 168, 0.4);
             position: relative;
             transform: scale(0.9);
             opacity: 0;
             animation: bounceIn 0.5s forwards;
         }
-
+        
         @keyframes bounceIn {
             to {
                 transform: scale(1);
@@ -382,32 +413,25 @@
             font-weight: bold;
             cursor: pointer;
             transition: color 0.2s;
+            padding: 5px;
+            margin: -5px;
         }
-
-        .close-btn:hover,
-        .close-btn:focus {
+        
+        .close-btn:hover {
             color: #b71c1c;
-            text-decoration: none;
         }
-
-        .popup-header {
-            text-align: center;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #fd79a8;
-            padding-bottom: 10px;
+        
+        .close-btn:active {
+            transform: scale(0.9);
         }
-
+        
         .popup-title {
             font-family: 'Dancing Script', cursive;
             font-size: 24px;
             color: #d63031;
             font-weight: 700;
         }
-
-        .popup-body {
-            text-align: center;
-        }
-
+        
         .popup-body p {
             font-family: 'Crimson Text', serif;
             font-size: 16px;
@@ -421,49 +445,117 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        
-        /* --- MOBILE OPTIMIZATION MEDIA QUERY --- */
+
+        /* Mobile optimizations */
         @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            
             .envelope {
-                height: 280px; /* Slightly smaller height on smaller screens */
+                height: 250px;
             }
 
             .envelope-flap {
-                height: 140px;
+                height: 125px;
             }
 
             .envelope-body {
-                height: 140px;
-            }
-
-            .letter {
-                max-height: 300px; /* Shorter letter on mobile */
-                padding: 20px;
-                top: 30px;
-                transform: translateX(-50%) translateY(100px);
-            }
-            
-            .envelope.open .letter {
-                transform: translateX(-50%) translateY(-30px);
-            }
-
-            .address {
-                top: 200px;
-                font-size: 18px;
+                height: 125px;
             }
             
             .stamp {
-                width: 60px;
-                height: 50px;
-                right: 20px;
+                width: 50px;
+                height: 45px;
+                right: 15px;
+                top: 15px;
+            }
+
+            .address {
+                top: 180px;
+                font-size: 16px;
+            }
+
+            .letter {
+                height: 80vh;
+                max-height: 600px;
+                padding: 20px;
+                transform: translate(-50%, -50%) translateY(100px);
+            }
+            
+            .envelope.open .letter {
+                transform: translate(-50%, -50%) translateY(0px);
+            }
+
+            .letter-header {
+                margin-left: -20px;
+                margin-right: -20px;
+                margin-top: -20px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-top: 20px;
+                top: -20px;
+            }
+
+            .signature {
+                margin-left: -20px;
+                margin-right: -20px;
+                margin-bottom: -20px;
+                padding: 15px 20px 20px 20px;
+                bottom: -20px;
             }
 
             .letter-title {
-                font-size: 24px;
+                font-size: 22px;
+            }
+            
+            .letter-content {
+                font-size: 14px;
+                line-height: 1.7;
+                padding-bottom: 20px;
             }
 
             .popup-content {
-                margin: 20% auto; /* Adjust vertical centering for mobile */
+                margin: 25% auto;
+            }
+            
+            .click-hint {
+                bottom: -40px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .envelope {
+                height: 200px;
+            }
+
+            .envelope-flap {
+                height: 100px;
+            }
+
+            .envelope-body {
+                height: 100px;
+            }
+            
+            .letter-content {
+                font-size: 13px;
+            }
+            
+            .popup-content {
+                padding: 15px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .letter {
+                max-height: 90vh;
+            }
+            
+            .popup-content {
+                margin: 5% auto;
+                max-height: 85vh;
+                overflow-y: auto;
             }
         }
     </style>
@@ -477,7 +569,8 @@
             <div class="envelope-body"></div>
             
             <div class="stamp">
-                <img src="both.jpg" alt="Sweet gift heart stamp" class="stamp-image">
+                <img src="both.jpg" alt="Sweet gift heart stamp" class="stamp-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="stamp-fallback" style="display:none;">LOVE<br>2024</div>
             </div>
             <div class="address">
                 To: Yara Cole Hambre<br>
@@ -501,6 +594,7 @@
                     <p>Please know that this apology comes from the deepest part of my heart. I hope you can find it in yours to forgive me, and perhaps give us another chance to create something even more beautiful together.</p>
                     
                     <p>Your patience and kindness are the greatest gifts in my life. Every moment spent with you, even the difficult ones, is a valuable lesson that I hold dear. I promise to cherish and protect the beautiful bond we share. I am ready to listen and learn.</p>
+                    
                     <p>I look forward to the moment we can talk face-to-face and move past this. Until then, please accept this digital hug and know that I miss you terribly. I love you more than words can say.</p>
 
                     <p>With all my love and sincerest apologies,</p>
@@ -509,8 +603,7 @@
                 <div class="signature">
                     Forever yours ❤️
                 </div>
-
-                </div>
+            </div>
             
             <div class="flower-decoration flower1">🌸</div>
             <div class="flower-decoration flower2">🌺</div>
@@ -527,65 +620,81 @@
             </div>
             <div class="popup-body">
                 <p>I hope this makes you smile. mwa mwa mwa</p>
-                <img src="flower.png" alt="Sweet Flower Image" class="popup-image">
+                <img src="flower.png" alt="Sweet Flower Image" class="popup-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="font-size: 60px; margin: 20px 0; display: none;">🌸</div>
             </div>
         </div>
     </div>
+    
     <script>
-        // Flag to ensure we only attach the listener once
-        let scrollListenerAttached = false; 
+        let scrollListenerAttached = false;
+        let scrollTimeout = null;
 
         function openEnvelope() {
             const envelope = document.getElementById('envelope');
-            // Toggle the 'open' class
             envelope.classList.toggle('open');
             
             const letter = document.getElementById('letter');
 
-            // Only attach scroll listener if the envelope is open and the listener hasn't been attached yet
             if (envelope.classList.contains('open') && !scrollListenerAttached) {
-                // Check position immediately after opening
-                // We add a short delay to allow for the CSS transition to complete on some browsers
                 setTimeout(() => {
                     checkScrollPosition();
-                }, 900); 
+                }, 900);
                 
-                letter.addEventListener('scroll', checkScrollPosition);
+                letter.addEventListener('scroll', debounceScroll, { passive: true });
+                letter.addEventListener('touchmove', debounceScroll, { passive: true });
+                letter.addEventListener('touchend', checkScrollPosition, { passive: true });
                 scrollListenerAttached = true;
             } else if (!envelope.classList.contains('open') && scrollListenerAttached) {
-                // Remove the listener if the letter is closed again
-                letter.removeEventListener('scroll', checkScrollPosition);
+                letter.removeEventListener('scroll', debounceScroll);
+                letter.removeEventListener('touchmove', debounceScroll);
+                letter.removeEventListener('touchend', checkScrollPosition);
                 scrollListenerAttached = false;
-                closePopup(); // Close the popup if the envelope is closed
+                closePopup();
             }
+        }
+        
+        function debounceScroll() {
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+            scrollTimeout = setTimeout(checkScrollPosition, 100);
         }
         
         function checkScrollPosition() {
             const letter = document.getElementById('letter');
-            
-            // Check if the scroll position is at the very bottom, allowing for a small 5-pixel tolerance.
-            const isScrolledToBottom = (letter.scrollTop + letter.clientHeight) >= (letter.scrollHeight - 5); 
+            const threshold = 15;
+            const isScrolledToBottom = (letter.scrollTop + letter.clientHeight) >= (letter.scrollHeight - threshold);
             
             if (isScrolledToBottom) {
-                showPopup(); // Show the popup instead of revealing the in-letter image
+                showPopup();
                 
-                // Remove the listener after the popup is triggered so it doesn't run unnecessarily
-                letter.removeEventListener('scroll', checkScrollPosition);
+                // Clean up listeners
+                letter.removeEventListener('scroll', debounceScroll);
+                letter.removeEventListener('touchmove', debounceScroll);
+                letter.removeEventListener('touchend', checkScrollPosition);
                 scrollListenerAttached = false;
             }
         }
         
-        // --- POPUP FUNCTIONS ---
         function showPopup() {
             document.getElementById('imagePopup').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
         function closePopup() {
             document.getElementById('imagePopup').style.display = 'none';
+            document.body.style.overflow = '';
         }
-        // --- END POPUP FUNCTIONS ---
         
-        // Heart animation logic remains the same
+        // Close popup when clicking outside
+        document.getElementById('imagePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+        
+        // Heart animation
         function createHeart() {
             const hearts = document.getElementById('hearts');
             const heart = document.createElement('div');
@@ -597,15 +706,37 @@
             hearts.appendChild(heart);
             
             setTimeout(() => {
-                heart.remove();
+                if (heart.parentNode) {
+                    heart.remove();
+                }
             }, 6000);
         }
         
-        setInterval(createHeart, 2000);
+        const heartInterval = window.innerWidth <= 480 ? 3000 : 2000;
+        setInterval(createHeart, heartInterval);
         
         for (let i = 0; i < 5; i++) {
             setTimeout(createHeart, i * 400);
         }
+        
+        // Prevent double tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                if (document.getElementById('envelope').classList.contains('open')) {
+                    checkScrollPosition();
+                }
+            }, 500);
+        });
     </script>
 </body>
 </html>
